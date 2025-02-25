@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuestionPaperGeneration</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3949ab;
+            --primary-light: #6f74dd;
+            --primary-dark: #00227b;
+            --secondary: #ffab40;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: var(--primary);
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .profile-section {
+            background-color: var(--primary-dark);
+            padding: 20px;
+        }
+
+        .profile-pic {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .menu-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: var(--primary-light);
+            text-decoration: none;
+            color: white;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex-grow: 1;
+        }
+
+        .main-header {
+            background: white;
+            padding: 25px 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .logout-btn {
+            background-color: var(--secondary);
+            border: none;
+        }
+
+        .logout-btn:hover {
+            background-color: #ff9100;
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 25px;
+            margin: 20px;
+        }
+
+        .generate-btn {
+            background-color: var(--primary);
+            border: none;
+        }
+
+        .generate-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .save-btn {
+            background-color: var(--secondary);
+            border: none;
+            color: #333;
+        }
+
+        .save-btn:hover {
+            background-color: #ff9100;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="profile-section d-flex align-items-center gap-3">
+                <img src="/static/images/profile_icon.png" alt="Profile" class="profile-pic">
+                <div>
+                    <div class="fw-bold">Dr. Sarah Johnson</div>
+                    <small class="text-white-50">Professor</small>
+                </div>
+            </div>
+
+            <div class="menu mt-3">
+                <a href="/dashboard" class="menu-item">
+                    <i class="fas fa-th-large"></i>
+                    Dashboard
+                </a>
+                <a href="/course" class="menu-item">
+                    <i class="fas fa-book"></i>
+                    Course
+                </a>
+                <a href="/question-bank" class="menu-item">
+                    <i class="fas fa-database"></i>
+                    Question Bank
+                </a>
+                <a href="/generate-paper" class="menu-item active">
+                    <i class="fas fa-plus-square"></i>
+                    Generate Question Paper
+                </a>
+                <a href="/history" class="menu-item">
+                    <i class="fas fa-history"></i>
+                    History
+                </a>
+                <a href="/feedback" class="menu-item">
+                    <i class="fas fa-comment"></i>
+                    Feedback
+                </a>
+                <a href="/settings" class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="main-header d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-3">
+                    <img src="/static/images/obe_logo.png" alt="OBE Logo" height="40">
+                    <span class="fs-5 fw-bold">Question Paper Generator</span>
+                </div>
+                <button class="btn logout-btn" id="logoutBtn">Logout</button>
+            </div>
+
+            <!-- Form Container -->
+            <div class="form-container">
+                <h2 class="mb-2">Generate New Question Paper</h2>
+                <p class="text-muted mb-4">Configure parameters to generate an outcome-based question paper.</p>
+
+                <form id="questionPaperForm">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Semester</label>
+                                <select class="form-select" required>
+                                    <option value="">Select Semester</option>
+                                    <option>1st Semester</option>
+                                    <option>2nd Semester</option>
+                                    <option>3rd Semester</option>
+                                    <option>4th Semester</option>
+                                    <option>5th Semester</option>
+                                    <option>6th Semester</option>
+                                    <option>7th Semester</option>
+                                    <option>8th Semester</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Exam Type</label>
+                                <select class="form-select" required>
+                                    <option value="">Select Exam Type</option>
+                                    <option>Mid-term Examination</option>
+                                    <option>Final Examination</option>
+                                    <option>Quiz</option>
+                                    <option>Assignment</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Month and Year</label>
+                                <input type="month" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Course With Course Code</label>
+                                <input type="text" class="form-control" placeholder="e.g., A11 Android Programming" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Program</label>
+                                <select class="form-select" required>
+                                    <option value="">Select Program</option>
+                                    <option>BSC Computer Science</option>
+                                    <option>BCA</option>
+                                    <option>BSC MATHEMATICS</option>
+                                    <option>BSC Statistics</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Time Duration (hours)</label>
+                                <input type="number" class="form-control" min="0.5" max="4" step="0.5" value="3" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Maximum Marks</label>
+                                <input type="number" class="form-control" value="100" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Difficulty Level</label>
+                                <select class="form-select" required>
+                                    <option>Mixed (Recommended)</option>
+                                    <option>Easy</option>
+                                    <option>Medium</option>
+                                    <option>Hard</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="form-label">Cognitive Level Distribution</label>
+                                <select class="form-select" required>
+                                    <option>Balanced Distribution</option>
+                                    <option>Emphasize Remember/Understand</option>
+                                    <option>Emphasize Apply/Analyze</option>
+                                    <option>Emphasize Evaluate/Create</option>
+                                    <option>Custom Distribution</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn generate-btn text-white me-2">Generate Question Paper</button>
+                        <button type="button" class="btn save-btn">Save Configuration</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Logout button handler
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = '/logout';
+            }
+        });
+
+        // Form submission handler
+        document.getElementById('questionPaperForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Add your form submission logic here
+            alert('Generating question paper...');
+        });
+    </script>
+</body>
+</html>

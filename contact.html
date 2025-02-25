@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact OBE Question Paper Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Navigation */
+/* Navbar styles */
+.navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background-color: rgba(162, 168, 246, 0.87);
+            box-shadow: 0 2px 10px rgba(57, 19, 19, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .contact-section {
+            min-height: 100vh;
+            padding: 40px 0;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                        url('/static/images/contact_bg.jpg') center/cover no-repeat;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .contact-header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .contact-header h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .contact-header p {
+            max-width: 600px;
+            line-height: 1.6;
+            color: #ccc;
+        }
+
+        .contact-container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+
+        .contact-info {
+            flex: 1;
+            padding: 20px;
+            color: white;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .info-icon {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+
+        .info-icon i {
+            color: #00bcd4;
+            font-size: 20px;
+        }
+
+        .info-content h3 {
+            color: #00bcd4;
+            margin-bottom: 5px;
+            font-size: 1.2em;
+        }
+
+        .info-content p {
+            color: #ccc;
+        }
+
+        .contact-form {
+            flex: 1;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            max-width: 500px;
+        }
+
+        .form-title {
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-bottom: 2px solid #ddd;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            background: transparent;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-bottom-color: #00bcd4;
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            background-color: #00bcd4;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #008c9e;
+        }
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .alert-success {
+            background-color: #dff0d8;
+            color: #3c763d;
+        }
+
+        .alert-error {
+            background-color: #f2dede;
+            color: #a94442;
+        }
+
+        @media (max-width: 768px) {
+            .contact-container {
+                flex-direction: column;
+            }
+
+            .contact-info, .contact-form {
+                margin: 20px 0;
+            }
+        }
+
+    /* Footer Styles */
+footer {
+    background-color: rgb(238, 236, 236);
+    color: rgb(18, 20, 105);
+    padding: 50px 100px;
+}
+
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.footer-logo {
+    flex: 2;
+}
+
+.footer-logo img {
+    max-width: 200px;
+    margin-bottom: 15px;
+}
+
+.footer-logo p {
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.footer-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-section h4 {
+    color: rgb(244, 29, 97);
+    margin-bottom: 15px;
+    text-transform: uppercase;
+}
+
+.footer-section a {
+    color: rgb(18, 20, 105);
+    text-decoration: none;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.contact-infos p {
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: rgb(18, 20, 105);
+}
+
+.copyright {
+    text-align: center;
+    padding-top: 30px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #030303;
+}
+
+@media (max-width: 768px) {
+    .footer-container {
+        flex-direction: column;
+    }
+}
+
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <img src="/static/images/obe_logo.png" alt="OBE Logo">
+        </div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+            <a href="{{ url_for('about') }}#features">Features</a>
+        </div>
+    </nav>
+    <section class="contact-section">
+        <div class="contact-header">
+            <h1>Contact Us</h1>
+            <p>Have questions or need support? Fill out the form, and we’ll get back to you as soon as possible. Whether it's technical assistance, feature inquiries, or feedback, we're here to help!</p>
+        </div>
+
+        <div class="contact-container">
+            <div class="contact-info">
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="info-content">
+                        <h3>Address</h3>
+                        <p>Amal college of advanced studies Nilambur,<br>Nilambur, Malappuram, Kerala, India ,679329</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="info-content">
+                        <h3>Phone</h3>
+                        <p>+91 7902388598</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="info-content">
+                        <h3>Email</h3>
+                        <p>svb2627@gmail.com</p>
+                    </div>
+                </div>
+            </div>
+
+            <form class="contact-form" id="contactForm">
+                <h2 class="form-title">Send Message</h2>
+
+                <div class="alert alert-success" id="successAlert">
+                    Your message has been sent successfully!
+                </div>
+
+                <div class="alert alert-error" id="errorAlert">
+                    There was an error sending your message. Please try again.
+                </div>
+
+                <div class="form-group">
+                    <input type="text" id="name" name="name" placeholder="Full Name" required>
+                </div>
+
+                <div class="form-group">
+                    <input type="email" id="email" name="email" placeholder="Email" required>
+                </div>
+
+                <div class="form-group">
+                    <input type="tel" id="phone" name="phone" placeholder="Phone Number"
+                           pattern="[0-9]{10}" title="Please enter a valid 10-digit phone number" required>
+                </div>
+
+                <div class="form-group">
+                    <textarea id="message" name="message" placeholder="Type your Message..." required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">Send</button>
+            </form>
+        </div>
+    </section>
+
+    <script type="text/javascript"
+    src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+</script>
+<script>
+    // Initialize EmailJS with your public key
+    (function() {
+        emailjs.init({
+            publicKey: "bwE1lsPPYSP80Vj96",
+        });
+    })();
+
+    document.getElementById('contactForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const submitButton = this.querySelector('button[type="submit"]');
+        const originalButtonText = submitButton.textContent;
+        submitButton.textContent = 'Sending...';
+        submitButton.disabled = true;
+
+        // Get form values
+        const formData = {
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            phone: document.getElementById('phone').value,
+            message: document.getElementById('message').value
+        };
+
+        // Send email using EmailJS
+        emailjs.send('service_f8d6xad', 'template_gm34kbl', formData)
+            .then((response) => {
+                console.log('SUCCESS!', response.status, response.text);
+                document.getElementById('successAlert').style.display = 'block';
+                document.getElementById('errorAlert').style.display = 'none';
+                document.getElementById('contactForm').reset();
+            })
+            .catch((error) => {
+                console.error('FAILED...', error);
+                document.getElementById('errorAlert').style.display = 'block';
+                document.getElementById('successAlert').style.display = 'none';
+            })
+            .finally(() => {
+                submitButton.textContent = originalButtonText;
+                submitButton.disabled = false;
+            });
+    });
+    </script>
+        <footer>
+            <div class="footer-container">
+                <div class="footer-logo">
+                    <img src="/static/images/obe_logo.png" alt="OBE Logo">
+                    <p>OBE Question Paper Generator is an online tool that automates question paper creation based on OBE principles. It maps questions to course outcomes (COs) and Bloom's Taxonomy levels, ensuring balanced assessments</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <a href="/">Home</a>
+                    <a href="/about">About Us</a>
+                    <a href="/contact">Contact Us</a>
+                </div>
+
+                <div class="footer-section contact-infos">
+                    <h4>Contact Info</h4>
+                    <p>HEAD OFFICE :NILAMBUR</p>
+                    <p>AMAL COLLEGE OF ADVANCED STUDIES NILAMBUR</p>
+                    <p>NILAMBUR</p>
+                    <p>+91 7902388598</p>
+                    <p>svb2627@gmail.com</p>
+                </div>
+            </div>
+            <div class="copyright">
+                © 2024, OBE Question paper Generator, ALL RIGHTS RESERVED.
+            </div>
+        </footer>
+</body>
+</html>

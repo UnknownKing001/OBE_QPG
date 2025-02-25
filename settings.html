@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OBE Settings</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3949ab;
+            --primary-light: #6f74dd;
+            --primary-dark: #00227b;
+            --secondary: #ffab40;
+            --dark-text: #333;
+            --light-text: #fff;
+            --bg-light: #f5f5f5;
+            --card-bg: #fff;
+            --border-color: #e0e0e0;
+            --success: #4caf50;
+            --warning: #ff9800;
+        }
+
+        [data-theme="dark"] {
+            --primary: #5c6bc0;
+            --primary-light: #8e99f3;
+            --primary-dark: #26418f;
+            --secondary: #ffbd45;
+            --dark-text: #e0e0e0;
+            --light-text: #f5f5f5;
+            --bg-light: #121212;
+            --card-bg: #1e1e1e;
+            --border-color: #3d3d3d;
+            --success: #66bb6a;
+            --warning: #ffa726;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--dark-text);
+            transition: all 0.3s ease;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            background-color: var(--primary);
+            color: var(--light-text);
+            padding: 0;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        /* Profile Section */
+        .profile-section {
+            padding: 20px;
+            background-color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid var(--primary-light);
+            transition: all 0.3s ease;
+        }
+
+        .profile-pic {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--light-text);
+        }
+
+        .profile-info {
+            color: var(--light-text);
+        }
+
+        .profile-info span {
+            display: block;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .profile-info small {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Menu Styles */
+        .menu {
+            list-style: none;
+            padding: 20px 0;
+            margin-top: 3px;
+        }
+
+        /* Match course.html menu-item style */
+        .menu-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: var(--primary-light);
+            text-decoration: none;
+            color: white;
+        }
+
+        /* Main Content Header */
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: var(--card-bg);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 40px;
+            width: auto;
+        }
+
+        .logo span {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--dark-text);
+            transition: all 0.3s ease;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            padding: 20px;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--light-text);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: var(--dark-text);
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background-color: #ff9100;
+        }
+
+        /* Settings Panel Styles */
+        .settings-panel {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .settings-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .settings-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .settings-section h3 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .profile-upload {
+            position: relative;
+            display: inline-block;
+        }
+
+        .profile-upload input[type="file"] {
+            display: none;
+        }
+
+        .profile-upload-label {
+            cursor: pointer;
+            padding: 8px 16px;
+            background-color: var(--secondary);
+            color: var(--dark-text);
+            border-radius: 4px;
+            display: inline-block;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .profile-upload-label:hover {
+            background-color: #ff9100;
+        }
+
+        .form-check-input:checked {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        /* Dark mode specific overrides */
+        [data-theme="dark"] .form-control,
+        [data-theme="dark"] .form-select {
+            background-color: #2d2d2d;
+            border-color: #3d3d3d;
+            color: var(--light-text);
+        }
+
+        [data-theme="dark"] .form-control:focus,
+        [data-theme="dark"] .form-select:focus {
+            background-color: #2d2d2d;
+            border-color: var(--primary);
+            color: var(--light-text);
+        }
+
+        [data-theme="dark"] .form-label {
+            color: var(--light-text);
+        }
+
+        /* Dark Mode Toggle Styling */
+        .dark-mode-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dark-mode-toggle .toggle-label {
+            margin-bottom: 0;
+            cursor: pointer;
+        }
+
+        .color-mode-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar with Profile at Top -->
+        <div class="sidebar">
+            <!-- Profile Section -->
+            <div class="profile-section">
+                <img src="/static/images/profile_icon.png" alt="Profile" class="profile-pic">
+                <div class="profile-info">
+                    <span>Dr. Sarah Johnson</span>
+                    <small>Professor</small>
+                </div>
+            </div>
+
+            <!-- Menu Items - Changed to match course.html format -->
+            <div class="menu mt-3">
+                <a href="/dashboard" class="menu-item">
+                    <i class="fas fa-th-large"></i>
+                    Dashboard
+                </a>
+                <a href="/course" class="menu-item">
+                    <i class="fas fa-book"></i>
+                    Course
+                </a>
+                <a href="/question-bank" class="menu-item">
+                    <i class="fas fa-database"></i>
+                    Question Bank
+                </a>
+                <a href="/generate-paper" class="menu-item">
+                    <i class="fas fa-plus-square"></i>
+                    Generate Question Paper
+                </a>
+                <a href="/history" class="menu-item">
+                    <i class="fas fa-history"></i>
+                    History
+                </a>
+                <a href="/feedback" class="menu-item">
+                    <i class="fas fa-comment"></i>
+                    Feedback
+                </a>
+                <a href="/settings" class="menu-item active">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- New Header Layout -->
+            <div class="main-header">
+                <div class="header-left">
+                    <div class="logo">
+                        <img src="/static/images/obe_logo.png" alt="OBE Logo">
+                        <span>Question Paper Generator</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button id="logout-btn" class="btn btn-secondary">Logout</button>
+                </div>
+            </div>
+
+            <!-- Settings Panel -->
+            <div class="settings-panel">
+                <div class="settings-header">
+                    <h2>Settings</h2>
+                </div>
+
+                <!-- Profile Settings Section -->
+                <div class="settings-section">
+                    <h3><i class="fas fa-user me-2"></i>Profile Settings</h3>
+                    <div class="row mb-4">
+                        <div class="col-md-2">
+                            <img src="/api/placeholder/100/100" alt="Profile" class="rounded-circle" style="width: 100px; height: 100px;">
+                        </div>
+                        <div class="col-md-10">
+                            <h6 class="mb-3">Profile Picture</h6>
+                            <div class="profile-upload">
+                                <label class="profile-upload-label">
+                                    <i class="fas fa-upload me-2"></i>Change Photo
+                                    <input type="file" accept="image/*">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-control" value="Dr. Sarah Johnson">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" value="sarah.johnson@university.edu">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Department</label>
+                            <input type="text" class="form-control" value="Computer Science">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Faculty ID</label>
+                            <input type="text" class="form-control" value="FAC123" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Display Settings Section -->
+                <div class="settings-section">
+                    <h3><i class="fas fa-desktop me-2"></i>Display Settings</h3>
+                    <div class="mb-4">
+                        <h6 class="mb-3">Appearance</h6>
+                        <div class="mb-3">
+                            <div class="form-check form-switch dark-mode-toggle">
+                                <input class="form-check-input" type="checkbox" id="darkModeToggle">
+                                <label class="form-check-label toggle-label" for="darkModeToggle">
+                                    <div class="color-mode-icon">
+                                        <i class="fas fa-moon"></i>
+                                    </div>
+                                    Dark Mode
+                                </label>
+                            </div>
+                            <small class="text-muted d-block mt-1">Switch between light and dark theme</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Question Paper Settings Section -->
+                <div class="settings-section">
+                    <h3><i class="fas fa-file-alt me-2"></i>Question Paper Settings</h3>
+                    <div class="mb-4">
+                        <h6 class="mb-3">Default Paper Settings</h6>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Default Time Duration (minutes)</label>
+                                <input type="number" class="form-control" value="180">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Default Total Marks</label>
+                                <input type="number" class="form-control" value="100">
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h6 class="mb-3">Paper Generation Preferences</h6>
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="autoBalance" checked>
+                                <label class="form-check-label" for="autoBalance">Auto-balance difficulty levels</label>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="bloomsDistribution" checked>
+                                <label class="form-check-label" for="bloomsDistribution">Enforce Bloom's taxonomy distribution</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notification Settings Section -->
+                <div class="settings-section">
+                    <h3><i class="fas fa-bell me-2"></i>Notification Settings</h3>
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="emailNotif" checked>
+                            <label class="form-check-label" for="emailNotif">Email Notifications</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="paperGenNotif" checked>
+                            <label class="form-check-label" for="paperGenNotif">Paper Generation Notifications</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="reminderNotif">
+                            <label class="form-check-label" for="reminderNotif">Reminder Notifications</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Save Button Section -->
+                <div class="text-end">
+                    <button class="btn btn-secondary me-2">Cancel</button>
+                    <button class="btn btn-primary" onclick="saveSettings()">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Set up dark mode toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            // Setup Dark Mode Toggle
+            const darkModeToggle = document.getElementById('darkModeToggle');
+
+            // Check for saved theme preference or respect OS preference
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+            // Apply the saved theme or OS preference
+            if (savedTheme === 'dark' || (!savedTheme && prefersDarkScheme)) {
+                document.body.setAttribute('data-theme', 'dark');
+                darkModeToggle.checked = true;
+                updateDarkModeIcon(true);
+            } else {
+                document.body.removeAttribute('data-theme');
+                darkModeToggle.checked = false;
+                updateDarkModeIcon(false);
+            }
+
+            // Add event listener for dark mode toggle
+            darkModeToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    document.body.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
+                    updateDarkModeIcon(true);
+                } else {
+                    document.body.removeAttribute('data-theme');
+                    localStorage.setItem('theme', 'light');
+                    updateDarkModeIcon(false);
+                }
+            });
+        });
+
+        // Function to update the dark mode icon
+        function updateDarkModeIcon(isDarkMode) {
+            const iconElement = document.querySelector('.dark-mode-toggle .color-mode-icon i');
+            if (isDarkMode) {
+                iconElement.className = 'fas fa-moon';
+            } else {
+                iconElement.className = 'fas fa-sun';
+            }
+        }
+
+        // Logout handler
+        document.getElementById('logout-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = '/logout';
+            }
+        });
+
+        function saveSettings() {
+            // Here you would typically collect all the settings and send them to your backend
+
+            // Save dark mode setting
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            localStorage.setItem('theme', darkModeToggle.checked ? 'dark' : 'light');
+
+            alert('Settings saved successfully!');
+        }
+
+        // Handle profile picture upload
+        document.querySelector('input[type="file"]').addEventListener('change', function(e) {
+            if (e.target.files && e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.querySelectorAll('.profile-pic, .rounded-circle').forEach(img => {
+                        img.src = e.target.result;
+                    });
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        });
+    </script>
+</body>
+</html>

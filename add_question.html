@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OBE Add Question</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3949ab;
+            --primary-light: #6f74dd;
+            --primary-dark: #00227b;
+            --secondary: #ffab40;
+            --dark-text: #333;
+            --light-text: #fff;
+            --bg-light: #f5f5f5;
+            --card-bg: #fff;
+            --border-color: #e0e0e0;
+            --success: #4caf50;
+            --warning: #ff9800;
+        }
+
+        [data-theme="dark"] {
+            --primary: #5c6bc0;
+            --primary-light: #8e99f3;
+            --primary-dark: #26418f;
+            --secondary: #ffbd45;
+            --dark-text: #e0e0e0;
+            --light-text: #f5f5f5;
+            --bg-light: #121212;
+            --card-bg: #1e1e1e;
+            --border-color: #3d3d3d;
+            --success: #66bb6a;
+            --warning: #ffa726;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--dark-text);
+            transition: all 0.3s ease;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            background-color: var(--primary);
+            color: var(--light-text);
+            padding: 0;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        /* Profile Section */
+        .profile-section {
+            padding: 20px;
+            background-color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid var(--primary-light);
+            transition: all 0.3s ease;
+        }
+
+        .profile-pic {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--light-text);
+        }
+
+        .profile-info {
+            color: var(--light-text);
+        }
+
+        .profile-info span {
+            display: block;
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        .profile-info small {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Menu Styles */
+
+.menu {
+    list-style: none;
+    padding: 20px 0;
+    margin: 0;
+}
+
+.menu-item a {
+    color: var(--light-text);
+    text-decoration: none;
+    padding: 12px 20px;
+    width: 100%;
+    transition: all 0.3s;
+}
+
+.menu-item:hover,
+.menu-item.active {
+    background-color: var(--primary-light);
+}
+
+.menu-item:hover a,
+.menu-item.active a {
+    color: var(--light-text);
+}
+
+.menu-item i {
+    width: 20px;
+    text-align: center;
+}
+        .menu-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            fill: currentColor;
+        }
+
+        /* Main Content Header */
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: var(--card-bg);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo img {
+            height: 40px;
+            width: auto;
+        }
+
+        .logo span {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--dark-text);
+            transition: all 0.3s ease;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            padding: 20px;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--light-text);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: var(--dark-text);
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background-color: #ff9100;
+        }
+
+        /* Question Panel Styles */
+        .question-panel {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .question-section {
+            margin-bottom: 25px;
+        }
+
+        /* Dark mode specific overrides */
+        [data-theme="dark"] .form-control,
+        [data-theme="dark"] .form-select {
+            background-color: #2d2d2d;
+            border-color: #3d3d3d;
+            color: var(--light-text);
+        }
+
+        [data-theme="dark"] .form-control:focus,
+        [data-theme="dark"] .form-select:focus {
+            background-color: #2d2d2d;
+            border-color: var(--primary);
+            color: var(--light-text);
+        }
+
+        [data-theme="dark"] .form-label {
+            color: var(--light-text);
+        }
+
+        /* Dark Mode Toggle Styling */
+        .dark-mode-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dark-mode-toggle .toggle-label {
+            margin-bottom: 0;
+            cursor: pointer;
+        }
+
+        .color-mode-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Success message styling */
+        .success-message {
+            display: none;
+            background-color: var(--success);
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Editor Styles */
+        .editor-container {
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .editor-toolbar {
+            background-color: var(--bg-light);
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .editor-toolbar button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 3px;
+            color: var(--dark-text);
+            transition: all 0.2s;
+        }
+
+        .editor-toolbar button:hover {
+            background-color: var(--border-color);
+        }
+
+        .editor-content {
+            min-height: 200px;
+            padding: 15px;
+            background-color: var(--card-bg);
+            color: var(--dark-text);
+        }
+
+        .editor-content:focus {
+            outline: none;
+        }
+
+        [data-theme="dark"] .editor-toolbar {
+            background-color: #2d2d2d;
+        }
+
+        [data-theme="dark"] .editor-toolbar button {
+            color: var(--light-text);
+        }
+
+        [data-theme="dark"] .editor-toolbar button:hover {
+            background-color: #3d3d3d;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar with Profile at Top -->
+        <!-- Updated Sidebar Section -->
+<div class="sidebar">
+    <!-- Profile Section remains unchanged -->
+    <div class="profile-section">
+        <img src="/static/images/profile_icon.png" alt="Profile" class="profile-pic">
+        <div class="profile-info">
+            <span>Dr. Sarah Johnson</span>
+            <small>Professor</small>
+        </div>
+    </div>
+
+    <!-- Updated Menu Structure -->
+    <ul class="menu mt-3">
+        <li class="menu-item">
+            <a href="/dashboard" class="d-flex align-items-center">
+                <i class="fas fa-th-large me-2"></i>
+                Dashboard
+            </a>
+        </li>
+        <li class="menu-item">
+            <a href="/course" class="d-flex align-items-center">
+                <i class="fas fa-book me-2"></i>
+                Course
+            </a>
+        </li>
+        <li class="menu-item active">
+            <a href="/question-bank" class="d-flex align-items-center">
+                <i class="fas fa-database me-2"></i>
+                Question Bank
+            </a>
+        </li>
+        <li class="menu-item">
+            <a href="/generate-paper" class="d-flex align-items-center">
+                <i class="fas fa-plus-square me-2"></i>
+                Generate Question Paper
+            </a>
+        </li>
+        <li class="menu-item">
+            <a href="/history" class="d-flex align-items-center">
+                <i class="fas fa-history me-2"></i>
+                History
+            </a>
+        </li>
+        <li class="menu-item">
+            <a href="/feedback" class="d-flex align-items-center">
+                <i class="fas fa-comment me-2"></i>
+                Feedback
+            </a>
+        </li>
+        <li class="menu-item">
+            <a href="/settings" class="d-flex align-items-center">
+                <i class="fas fa-cog me-2"></i>
+                Settings
+            </a>
+        </li>
+    </ul>
+</div>
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- New Header Layout -->
+            <div class="main-header">
+                <div class="header-left">
+                    <div class="logo">
+                        <img src="/static/images/obe_logo.png" alt="OBE Logo">
+                        <span>Question Paper Generator</span>
+                    </div>
+                </div>
+               <div class="header-right">
+                  <!--  <div class="dark-mode-toggle">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="darkModeToggle">
+                            <label class="form-check-label toggle-label" for="darkModeToggle">
+                                <div class="color-mode-icon">
+                                    <i class="fas fa-sun"></i>
+                                </div>
+                            </label>
+                        </div>
+                    </div> -->
+                    <button id="logout-btn" class="btn btn-secondary">Logout</button>
+                </div>
+            </div>
+
+            <!-- Success Message -->
+            <div class="success-message" id="successMessage">
+                <i class="fas fa-check-circle me-2"></i> Question successfully added to the bank!
+            </div>
+
+            <!-- Question Panel -->
+            <div class="question-panel">
+                <div class="question-header">
+                    <h2>Add New Question</h2>
+                    <div>
+                        <button class="btn btn-primary" id="viewAllQuestionsBtn">
+                            <i class="fas fa-list me-2"></i>View All Questions
+                        </button>
+                    </div>
+                </div>
+
+                <form id="addQuestionForm">
+                    <!-- Course Selection -->
+                    <div class="question-section">
+                        <label class="form-label">Course code</label>
+                        <select class="form-select" id="courseCodeSelect" required>
+                            <option value="" selected disabled>Select Course</option>
+                        </select>
+                        <label class="form-label">Course</label>
+                        <select class="form-select" id="courseSelect" required>
+                            <option value="" selected disabled>Select Course</option>
+                        </select>
+                    </div>
+
+                    <!-- Question Text -->
+                    <div class="question-section">
+                        <label class="form-label">Question Text</label>
+                        <div class="editor-container">
+                            <div class="editor-toolbar">
+                                <button type="button" title="Bold" onclick="formatText('bold')">
+                                    <i class="fas fa-bold"></i>
+                                </button>
+                                <button type="button" title="Italic" onclick="formatText('italic')">
+                                    <i class="fas fa-italic"></i>
+                                </button>
+                                <button type="button" title="Underline" onclick="formatText('underline')">
+                                    <i class="fas fa-underline"></i>
+                                </button>
+                                <button type="button" title="Bulleted List" onclick="formatText('insertUnorderedList')">
+                                    <i class="fas fa-list-ul"></i>
+                                </button>
+                                <button type="button" title="Numbered List" onclick="formatText('insertOrderedList')">
+                                    <i class="fas fa-list-ol"></i>
+                                </button>
+                                <button type="button" title="Code" onclick="formatText('formatBlock', 'pre')">
+                                    <i class="fas fa-code"></i>
+                                </button>
+                                <button type="button" title="Insert Image" onclick="insertImage()">
+                                    <i class="fas fa-image"></i>
+                                </button>
+                                <button type="button" title="Insert Table" onclick="insertTable()">
+                                    <i class="fas fa-table"></i>
+                                </button>
+                                <button type="button" title="Insert Math Formula" onclick="insertMathFormula()">
+                                    <i class="fas fa-square-root-alt"></i>
+                                </button>
+                            </div>
+                            <div class="editor-content" id="questionEditor" contenteditable="true"></div>
+                            <input type="hidden" id="questionText" name="questionText">
+                        </div>
+                        <small class="text-muted">Enter your question here. You can format text, add images, tables or mathematical formulas.</small>
+                    </div>
+
+                    <!-- Question Metadata -->
+                    <div class="row g-3 question-section">
+                        <!-- Bloom's Taxonomy Level -->
+                        <div class="col-md-4">
+                            <label class="form-label">Bloom's Taxonomy Level</label>
+                            <select class="form-select" id="bloomsLevel" required>
+                                <option value="" selected disabled>Select Level</option>
+                                <option value="remember">Remember</option>
+                                <option value="understand">Understand</option>
+                                <option value="apply">Apply</option>
+                                <option value="analyze">Analyze</option>
+                                <option value="evaluate">Evaluate</option>
+                                <option value="create">Create</option>
+                            </select>
+                            <small class="text-muted">Select the cognitive level of the question.</small>
+                        </div>
+
+                        <!-- Difficulty Level -->
+                        <div class="col-md-4">
+                            <label class="form-label">Difficulty Level</label>
+                            <select class="form-select" id="difficultyLevel" required>
+                                <option value="" selected disabled>Select Difficulty</option>
+                                <option value="easy">Easy</option>
+                                <option value="medium">Medium</option>
+                                <option value="hard">Hard</option>
+                            </select>
+                            <small class="text-muted">How challenging is this question?</small>
+                        </div>
+
+                        <!-- Marks -->
+                        <div class="col-md-4">
+                            <label class="form-label">Marks</label>
+                            <input type="number" class="form-control" id="markValue" min="1" max="20" required>
+                            <small class="text-muted">Assign marks for this question (1-20).</small>
+                        </div>
+                    </div>
+
+                    <!-- Question Type and Answer Options -->
+                    <div class="question-section">
+                        <label class="form-label">Question Type</label>
+                        <select class="form-select" id="questionType" onchange="toggleAnswerOptions()">
+                            <option value="descriptive" selected>Essay</option>
+                            <option value="descriptive" selected>Descriptive</option>
+                            <option value="short-answer">Short Answer</option>
+                            <option value="mcq">Multiple Choice</option>
+                            <option value="true-false">True/False</option>
+                            <option value="descriptive" selected>Fill in the Blanks</option>
+                        </select>
+
+                        <!-- Answer Options (Hidden by default, shown for MCQ/True-False) -->
+                        <div id="answerOptionsContainer" class="mt-3" style="display: none;">
+                            <!-- Will be populated dynamically based on question type -->
+                        </div>
+                    </div>
+
+                    <!-- Tags -->
+                    <div class="question-section">
+                        <label class="form-label">Tags</label>
+                        <input type="text" class="form-control" id="questionTags" placeholder="Add tags separated by commas">
+                        <small class="text-muted">Optional: Add tags to help organize and find questions later.</small>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="text-end">
+                        <button type="button" class="btn btn-secondary me-2" id="clearFormBtn">Clear Form</button>
+                        <button type="submit" class="btn btn-primary">Add Question</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Set up menu item selection
+        // Update the menu item selection code
+const menuItems = document.querySelectorAll('.menu-item');
+
+menuItems.forEach(item => {
+    item.addEventListener('click', function() {
+        // Remove active class from all menu items
+        menuItems.forEach(i => i.classList.remove('active'));
+        // Add active class to clicked menu item
+        this.classList.add('active');
+    });
+});
+        document.addEventListener('DOMContentLoaded', function() {
+            // Setup Dark Mode Toggle
+           // const darkModeToggle = document.getElementById('darkModeToggle');
+
+            // Check for saved theme preference or respect OS preference
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+            // Apply the saved theme or OS preference
+            if (savedTheme === 'dark' || (!savedTheme && prefersDarkScheme)) {
+                document.body.setAttribute('data-theme', 'dark');
+                darkModeToggle.checked = true;
+                updateDarkModeIcon(true);
+            } else {
+                document.body.removeAttribute('data-theme');
+                darkModeToggle.checked = false;
+                updateDarkModeIcon(false);
+            }
+
+            // Add event listener for dark mode toggle
+           /* darkModeToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    document.body.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
+                    updateDarkModeIcon(true);
+                } else {
+                    document.body.removeAttribute('data-theme');
+                    localStorage.setItem('theme', 'light');
+                    updateDarkModeIcon(false);
+                }
+            }); */
+
+            // Get all menu items
+            const menuItems = document.querySelectorAll('.menu li');
+
+            // Add click event listeners to menu items
+            menuItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // Remove active class from all menu items
+                    menuItems.forEach(i => i.classList.remove('active'));
+
+                    // Add active class to clicked menu item
+                    this.classList.add('active');
+
+                    // Get the page identifier
+                    const pageId = this.getAttribute('data-page');
+
+                    // Here you would typically navigate to the page
+                    console.log(`Navigating to ${pageId}`);
+
+                    // Navigate to the page based on the data-page attribute
+                    if (pageId === 'settings') {
+                        window.location.href = '/settings.html';
+                    } else if (pageId === 'question-bank') {
+                        // Already on this page
+                    } else {
+                        // Navigate to other pages as needed
+                        // window.location.href = `/${pageId}.html`;
+                    }
+                });
+            });
+            document.getElementById('clearFormBtn').addEventListener('click', clearForm);
+
+            // Set up form submission
+            document.getElementById('addQuestionForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                // Get content from the editor and store it in the hidden input
+                document.getElementById('questionText').value = document.getElementById('questionEditor').innerHTML;
+
+                // Here you would typically send the form data to your backend
+                // For demo purposes, we'll just show a success message
+                console.log('Question added to bank!');
+
+                // Show success message
+                const successMessage = document.getElementById('successMessage');
+                successMessage.style.display = 'block';
+
+                // Auto-hide the message after 3 seconds
+                setTimeout(() => {
+                    successMessage.style.display = 'none';
+                }, 3000);
+
+                // Optionally clear the form
+                // clearForm();
+            });
+
+            // Set up clear form button
+            document.getElementById('clearFormBtn').addEventListener('click', clearForm);
+
+            // Set up view all questions button
+            document.getElementById('viewAllQuestionsBtn').addEventListener('click', function() {
+                // Navigate to the questions list page
+                console.log('Navigating to question_bank');
+                window.location.href = '/question-bank';
+            });
+        });
+
+        // Logout button handler
+document.getElementById('logout-btn').addEventListener('click', function() {
+    if (confirm('Are you sure you want to logout?')) {
+        window.location.href = '/logout';
+    }
+});
+
+        // Function to update the dark mode icon
+        function updateDarkModeIcon(isDarkMode) {
+            const iconElement = document.querySelector('.dark-mode-toggle .color-mode-icon i');
+            if (isDarkMode) {
+                iconElement.className = 'fas fa-moon';
+            } else {
+                iconElement.className = 'fas fa-sun';
+            }
+        }
+
+        // Function to format text in the editor
+        function formatText(command, value = null) {
+            document.execCommand(command, false, value);
+            document.getElementById('questionEditor').focus();
+        }
+
+        // Function to insert an image
+        function insertImage() {
+            const url = prompt('Enter the URL of the image:');
+            if (url) {
+                document.execCommand('insertHTML', false, `<img src="${url}" alt="Question Image" style="max-width: 100%;">`);
+            }
+        }
+
+        // Function to insert a table
+        function insertTable() {
+            const rows = prompt('Enter number of rows:', '3');
+            const cols = prompt('Enter number of columns:', '3');
+
+            if (rows && cols) {
+                let tableHTML = '<table style="width:100%; border-collapse: collapse; margin: 15px 0;">';
+
+                for (let i = 0; i < parseInt(rows); i++) {
+                    tableHTML += '<tr>';
+                    for (let j = 0; j < parseInt(cols); j++) {
+                        if (i === 0) {
+                            tableHTML += '<th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Header</th>';
+                        } else {
+                            tableHTML += '<td style="border: 1px solid #ddd; padding: 8px;">Cell</td>';
+                        }
+                    }
+                    tableHTML += '</tr>';
+                }
+
+                tableHTML += '</table>';
+                document.execCommand('insertHTML', false, tableHTML);
+            }
+        }
+
+        // Function to insert a math formula
+        function insertMathFormula() {
+            const formula = prompt('Enter the LaTeX formula:', 'E = mc^2');
+            if (formula) {
+                // In a real implementation, you would use a LaTeX renderer like MathJax
+                // For now, we'll just use a placeholder
+                document.execCommand('insertHTML', false,
+                    `<div class="math-formula" style="background-color: #f3f3f3; padding: 10px; border-radius: 4px; font-family: monospace;">${formula}</div>`);
+            }
+        }
+
+        // Function to toggle answer options based on question type
+        function toggleAnswerOptions() {
+            const questionType = document.getElementById('questionType').value;
+            const container = document.getElementById('answerOptionsContainer');
+
+            // Clear previous content
+            container.innerHTML = '';
+
+            if (questionType === 'mcq') {
+                container.style.display = 'block';
+                container.innerHTML = `
+                    <div class="mb-3">
+                        <label class="form-label">Options</label>
+                        <div id="mcqOptions">
+                            <div class="input-group mb-2">
+                                <div class="input-group-text">
+                                    <input type="radio" name="correctOption" value="0" checked>
+                                </div>
+                                <input type="text" class="form-control" placeholder="Option 1">
+                                <button type="button" class="btn btn-outline-danger" onclick="removeOption(this)">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="input-group mb-2">
+                                <div class="input-group-text">
+                                    <input type="radio" name="correctOption" value="1">
+                                </div>
+                                <input type="text" class="form-control" placeholder="Option 2">
+                                <button type="button" class="btn btn-outline-danger" onclick="removeOption(this)">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="input-group mb-2">
+                                <div class="input-group-text">
+                                    <input type="radio" name="correctOption" value="2">
+                                </div>
+                                <input type="text" class="form-control" placeholder="Option 3">
+                                <button type="button" class="btn btn-outline-danger" onclick="removeOption(this)">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="input-group mb-2">
+                                <div class="input-group-text">
+                                    <input type="radio" name="correctOption" value="3">
+                                </div>
+                                <input type="text" class="form-control" placeholder="Option 4">
+                                <button type="button" class="btn btn-outline-danger" onclick="removeOption(this)">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-primary mt-2" onclick="addMcqOption()">
+                            <i class="fas fa-plus me-1"></i> Add Option
+                        </button>
+                    </div>
+                `;
+            } else if (questionType === 'true-false') {
+                container.style.display = 'block';
+                container.innerHTML = `
+                    <div class="mb-3">
+                        <label class="form-label">Correct Answer</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="trueFalseAnswer" id="answerTrue" value="true" checked>
+                            <label class="form-check-label" for="answerTrue">True</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="trueFalseAnswer" id="answerFalse" value="false">
+                            <label class="form-check-label" for="answerFalse">False</label>
+                        </div>
+                    </div>
+                `;
+            } else if (questionType === 'short-answer') {
+                container.style.display = 'block';
+                container.innerHTML = `
+                    <div class="mb-3">
+                        <label class="form-label">Sample Answer (for reference)</label>
+                        <textarea class="form-control" rows="3" placeholder="Enter a sample or expected answer"></textarea>
+                    </div>
+                `;
+            } else {
+                container.style.display = 'none';
+            }
+        }
+
+        // Function to add a new MCQ option
+        function addMcqOption() {
+            const mcqOptions = document.getElementById('mcqOptions');
+            const optionCount = mcqOptions.children.length;
+
+            const newOption = document.createElement('div');
+            newOption.className = 'input-group mb-2';
+            newOption.innerHTML = `
+                <div class="input-group-text">
+                    <input type="radio" name="correctOption" value="${optionCount}">
+                </div>
+                <input type="text" class="form-control" placeholder="Option ${optionCount + 1}">
+                <button type="button" class="btn btn-outline-danger" onclick="removeOption(this)">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+
+            mcqOptions.appendChild(newOption);
+        }
+
+        // Function to remove an MCQ option
+        function removeOption(button) {
+            const optionsContainer = document.getElementById('mcqOptions');
+            if (optionsContainer.children.length > 2) {
+                button.closest('.input-group').remove();
+            } else {
+                alert('At least 2 options are required for a multiple choice question.');
+            }
+        }
+
+        // Function to clear the form
+        function clearForm() {
+            document.getElementById('addQuestionForm').reset();
+            document.getElementById('questionEditor').innerHTML = '';
+            document.getElementById('answerOptionsContainer').innerHTML = '';
+            document.getElementById('answerOptionsContainer').style.display = 'none';
+            document.getElementById('questionText').value = '';
+            document.getElementById('questionType').value = 'descriptive';
+
+            // Clear validation states
+            const formElements = document.querySelectorAll('.form-control, .form-select');
+            formElements.forEach(element => {
+                element.classList.remove('is-invalid', 'is-valid');
+            });
+
+            // Reset tags input
+            const tagInput = document.getElementById('questionTags');
+            if (tagInput) {
+                tagInput.value = '';
+            }
+        }
+    </script>
+</body>
+</html>

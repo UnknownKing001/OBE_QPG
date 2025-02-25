@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OBE Home</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <img src="/static/images/obe_logo.png" alt="OBE Logo">Question Paper Generator
+        </div>
+        <div class="nav-links">
+            <a href="/about">About</a>
+            <a href="{{ url_for('about') }}#features">Features</a>
+            <a href="/contact">Contact</a>
+        </div>
+    </nav>
+    <section class="hero">
+        <div class="bg-shape shape1"></div>
+        <div class="bg-shape shape2"></div>
+        <div class="hero-content">
+            <h1>OUT-COME BASED EDUCATION <span>Question paper Generator</span></h1>
+            <p>OBE Question Paper Generator is an online tool that automates question paper creation based on OBE principles. It maps questions to course outcomes (COs) and Bloom's Taxonomy levels, ensuring balanced assessments</p>
+            <a href="/login" class="cta-btn">Generate Question Paper</a>
+        </div>
+        <div class="hero-image">
+            <img src="/static/images/bg_writing.jpg" alt="bg_writing">
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-logo">
+                <img src="/static/images/obe_logo.png" alt="OBE Logo">Question Paper Generator
+                <p>OBE Question Paper Generator is an online tool that automates question paper creation based on OBE principles. It maps questions to course outcomes (COs) and Bloom's Taxonomy levels, ensuring balanced assessments</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <a href="/">Home</a>
+                <a href="/about">About Us</a>
+                <a href="/contact">Contact Us</a>
+            </div>
+
+            <div class="footer-section contact-info">
+                <h4>Contact Info</h4>
+
+                <p>AMAL COLLEGE OF ADVANCED STUDIES NILAMBUR</p>
+                <p>NILAMBUR</p>
+                <p>+91 7902388598</p>
+                <p>svb2627@gmail.com</p>
+            </div>
+        </div>
+        <div class="copyright">
+            © 2024, OBE Question paper Generator, ALL RIGHTS RESERVED.
+        </div>
+    </footer>
+</body>
+</html>

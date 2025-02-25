@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Management</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3949ab;
+            --primary-light: #6f74dd;
+            --primary-dark: #00227b;
+            --secondary: #ffab40;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: var(--primary);
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .profile-section {
+            background-color: var(--primary-dark);
+            padding: 20px;
+        }
+
+        .profile-pic {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .menu-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: var(--primary-light);
+            text-decoration: none;
+            color: white;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex-grow: 1;
+        }
+
+        .main-header {
+            background: white;
+            padding: 25px 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .logout-btn {
+            background-color: var(--secondary);
+            border: none;
+        }
+
+        .logout-btn:hover {
+            background-color: #ff9100;
+        }
+        .course-card {
+            transition: transform 0.3s;
+        }
+
+        .course-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .question-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .add-question-form {
+            display: none;
+        }
+
+        .course-card.expanded .add-question-form {
+            display: block;
+        }
+
+        .btn-add-questions {
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .course-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .course-actions button {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="profile-section d-flex align-items-center gap-3">
+                <img src="/static/images/profile_icon.png" alt="Profile" class="profile-pic">
+                <div>
+                    <div class="fw-bold">Dr. Sarah Johnson</div>
+                    <small class="text-white-50">Professor</small>
+                </div>
+            </div>
+
+            <div class="menu mt-3">
+                <a href="/dashboard" class="menu-item">
+                    <i class="fas fa-th-large"></i>
+                    Dashboard
+                </a>
+                <a href="/course" class="menu-item active">
+                    <i class="fas fa-book"></i>
+                    Course
+                </a>
+                <a href="/question-bank" class="menu-item">
+                    <i class="fas fa-database"></i>
+                    Question Bank
+                </a>
+                <a href="/generate-paper" class="menu-item">
+                    <i class="fas fa-plus-square"></i>
+                    Generate Question Paper
+                </a>
+                <a href="/history" class="menu-item">
+                    <i class="fas fa-history"></i>
+                    History
+                </a>
+                <a href="/feedback" class="menu-item">
+                    <i class="fas fa-comment"></i>
+                    Feedback
+                </a>
+                <a href="/settings" class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="main-header d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-3">
+                    <img src="/static/images/obe_logo.png" alt="OBE Logo" height="40">
+                    <span class="fs-5 fw-bold">Question Paper Generator</span>
+                </div>
+                <button class="btn logout-btn" id="logoutBtn">Logout</button>
+            </div>
+
+             <!-- Course Management heading Section -->
+            <div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="fs-7 "><b>Course Management</b></h2>
+        </div>
+    </div>
+</div>
+
+            <!-- Course Management Section -->
+            <div class="container mt-4">
+                <!-- Add Course Button -->
+                <div class="d-flex justify-content-end mb-4">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCourseModal">
+                        <i class="fas fa-plus me-2"></i>Add New Course
+                    </button>
+                </div>
+
+                <!-- Course Cards Container -->
+                <div class="row" id="courseContainer">
+                    <!-- Course cards will be added here dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Course Modal -->
+    <div class="modal fade" id="addCourseModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Course</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addCourseForm">
+                        <div class="mb-3">
+                            <label class="form-label">Course Code</label>
+                            <input type="text" class="form-control" name="courseCode" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Course Name</label>
+                            <input type="text" class="form-control" name="courseName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Department</label>
+                            <input type="text" class="form-control" name="department" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Semester</label>
+                            <select class="form-select" name="semester" required>
+                                <option value="">Select Semester</option>
+                                <option value="1">Semester 1</option>
+                                <option value="2">Semester 2</option>
+                                <option value="3">Semester 3</option>
+                                <option value="4">Semester 4</option>
+                                <option value="5">Semester 5</option>
+                                <option value="6">Semester 6</option>
+                                <option value="7">Semester 7</option>
+                                <option value="8">Semester 8</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveCourseBtn">Save Course</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Course Modal -->
+    <div class="modal fade" id="editCourseModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Course</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editCourseForm">
+                        <input type="hidden" name="originalCourseCode" id="originalCourseCode">
+                        <div class="mb-3">
+                            <label class="form-label">Course Code</label>
+                            <input type="text" class="form-control" name="courseCode" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Course Name</label>
+                            <input type="text" class="form-control" name="courseName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Department</label>
+                            <input type="text" class="form-control" name="department" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Semester</label>
+                            <select class="form-select" name="semester" required>
+                                <option value="">Select Semester</option>
+                                <option value="1">Semester 1</option>
+                                <option value="2">Semester 2</option>
+                                <option value="3">Semester 3</option>
+                                <option value="4">Semester 4</option>
+                                <option value="5">Semester 5</option>
+                                <option value="6">Semester 6</option>
+                                <option value="7">Semester 7</option>
+                                <option value="8">Semester 8</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="updateCourseBtn">Update Course</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal for Course Creation -->
+    <div class="modal fade" id="courseCreatedModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Course Created Successfully</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Your course has been created successfully. Would you like to add questions to this course now?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Later</button>
+                    <button type="button" class="btn btn-primary" id="goToAddQuestionsBtn">Add Questions Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteCourseModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this course? This action cannot be undone.</p>
+                    <p class="fw-bold" id="courseToDeleteName"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete Course</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Store courses in localStorage
+        let courses = JSON.parse(localStorage.getItem('courses')) || [];
+        let currentCourseCode = ''; // To store the code of the most recently created course
+        let courseToDelete = ''; // To store the code of the course to delete
+
+        // Function to create course card
+        function createCourseCard(course) {
+            const card = document.createElement('div');
+            card.className = 'col-md-6 col-lg-4 mb-4';
+            card.innerHTML = `
+                <div class="card course-card h-100">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">${course.courseCode}</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-title">${course.courseName}</h6>
+                        <p class="card-text text-muted">
+                            Department: ${course.department}<br>
+                            Semester: ${course.semester}
+                        </p>
+                        <div class="question-list mb-3">
+                            <h6>Questions:</h6>
+                            <ul class="list-group" id="questionList-${course.courseCode}">
+                                ${course.questions ? course.questions.map(q =>
+                                    `<li class="list-group-item">${q}</li>`
+                                ).join('') : ''}
+                            </ul>
+                        </div>
+                        <button class="btn btn-primary btn-add-questions w-100 mb-3" onclick="redirectToAddQuestions('${course.courseCode}')">
+                            <i class="fas fa-plus me-2"></i>Add Questions
+                        </button>
+                        <button class="btn btn-outline-primary btn-add-questions" onclick="redirectToAddQuestions('${course.courseCode}')">
+                            <i class="fas fa-question-circle me-2"></i>Manage Questions
+                        </button>
+                        <div class="course-actions">
+                            <button class="btn btn-outline-secondary" onclick="editCourse('${course.courseCode}')">
+                                <i class="fas fa-edit me-2"></i>Edit
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="deleteCourse('${course.courseCode}')">
+                                <i class="fas fa-trash-alt me-2"></i>Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            return card;
+        }
+
+        // Function to render all courses
+        function renderCourses() {
+            const container = document.getElementById('courseContainer');
+            container.innerHTML = '';
+            courses.forEach(course => {
+                container.appendChild(createCourseCard(course));
+            });
+        }
+
+        // Function to add question to a course
+        function addQuestion(event, courseCode) {
+            event.preventDefault();
+            const form = event.target;
+            const input = form.querySelector('input');
+            const question = input.value.trim();
+
+            if (question) {
+                const course = courses.find(c => c.courseCode === courseCode);
+                if (course) {
+                    course.questions = course.questions || [];
+                    course.questions.push(question);
+                    localStorage.setItem('courses', JSON.stringify(courses));
+                    renderCourses();
+                }
+            }
+            form.reset();
+        }
+
+        // Function to redirect to the add_question page
+        function redirectToAddQuestions(courseCode) {
+            // Store the current course code in session storage so the question page knows which course to add to
+            sessionStorage.setItem('currentCourseCode', courseCode);
+            // Redirect to the add_question page
+            window.location.href = `/add-question?courseCode=${courseCode}`;
+        }
+
+        // Function to populate edit form with course data
+        function editCourse(courseCode) {
+            const course = courses.find(c => c.courseCode === courseCode);
+            if (course) {
+                document.getElementById('originalCourseCode').value = courseCode;
+                const form = document.getElementById('editCourseForm');
+                form.elements['courseCode'].value = course.courseCode;
+                form.elements['courseName'].value = course.courseName;
+                form.elements['department'].value = course.department;
+                form.elements['semester'].value = course.semester;
+
+                const modal = new bootstrap.Modal(document.getElementById('editCourseModal'));
+                modal.show();
+            }
+        }
+
+        // Function to show delete confirmation
+        function deleteCourse(courseCode) {
+            const course = courses.find(c => c.courseCode === courseCode);
+            if (course) {
+                courseToDelete = courseCode;
+                document.getElementById('courseToDeleteName').textContent = `${course.courseCode} - ${course.courseName}`;
+                const modal = new bootstrap.Modal(document.getElementById('deleteCourseModal'));
+                modal.show();
+            }
+        }
+
+        // Save course button handler
+        document.getElementById('saveCourseBtn').addEventListener('click', function() {
+            const form = document.getElementById('addCourseForm');
+            const formData = new FormData(form);
+            const courseData = Object.fromEntries(formData.entries());
+
+            // Basic validation
+            if (!courseData.courseCode || !courseData.courseName) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            // Check for duplicate course code
+            if (courses.some(c => c.courseCode === courseData.courseCode)) {
+                alert('Course code already exists');
+                return;
+            }
+
+            // Add new course
+            courses.push({
+                ...courseData,
+                questions: []
+            });
+
+            // Save to localStorage
+            localStorage.setItem('courses', JSON.stringify(courses));
+
+            // Store the current course code for possible redirection
+            currentCourseCode = courseData.courseCode;
+
+            // Close modal and reset form
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addCourseModal'));
+            modal.hide();
+            form.reset();
+
+            // Show the confirmation modal
+            const confirmationModal = new bootstrap.Modal(document.getElementById('courseCreatedModal'));
+            confirmationModal.show();
+
+            // Render updated courses
+            renderCourses();
+        });
+
+        // Update course button handler
+        document.getElementById('updateCourseBtn').addEventListener('click', function() {
+            const form = document.getElementById('editCourseForm');
+            const formData = new FormData(form);
+            const courseData = Object.fromEntries(formData.entries());
+            const originalCourseCode = courseData.originalCourseCode;
+
+            // Remove originalCourseCode from courseData
+            delete courseData.originalCourseCode;
+
+            // Basic validation
+            if (!courseData.courseCode || !courseData.courseName) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            // Check for duplicate course code (only if changed)
+            if (courseData.courseCode !== originalCourseCode &&
+                courses.some(c => c.courseCode === courseData.courseCode)) {
+                alert('Course code already exists');
+                return;
+            }
+
+            // Find and update the course
+            const courseIndex = courses.findIndex(c => c.courseCode === originalCourseCode);
+            if (courseIndex !== -1) {
+                // Preserve questions from the original course
+                const questions = courses[courseIndex].questions || [];
+                courses[courseIndex] = { ...courseData, questions };
+
+                // Save to localStorage
+                localStorage.setItem('courses', JSON.stringify(courses));
+
+                // Close modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('editCourseModal'));
+                modal.hide();
+
+                // Render updated courses
+                renderCourses();
+            }
+        });
+
+        // Confirm delete button handler
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+            if (courseToDelete) {
+                // Filter out the course to delete
+                courses = courses.filter(c => c.courseCode !== courseToDelete);
+
+                // Save to localStorage
+                localStorage.setItem('courses', JSON.stringify(courses));
+
+                // Close modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('deleteCourseModal'));
+                modal.hide();
+
+                // Render updated courses
+                renderCourses();
+
+                // Reset courseToDelete
+                courseToDelete = '';
+            }
+        });
+
+        // Add question redirect button handler
+        document.getElementById('goToAddQuestionsBtn').addEventListener('click', function() {
+            // Close the confirmation modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('courseCreatedModal'));
+            modal.hide();
+
+            // Redirect to the add_question page
+            redirectToAddQuestions(currentCourseCode);
+        });
+
+        // Logout button handler
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = '/logout';
+            }
+        });
+
+        // Initial render
+        renderCourses();
+    </script>
+</body>
+</html>

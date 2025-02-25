@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History - Question Paper Generator</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3949ab;
+            --primary-light: #6f74dd;
+            --primary-dark: #00227b;
+            --secondary: #ffab40;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: var(--primary);
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .profile-section {
+            background-color: var(--primary-dark);
+            padding: 20px;
+        }
+
+        .profile-pic {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .menu-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: var(--primary-light);
+            text-decoration: none;
+            color: white;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex-grow: 1;
+        }
+
+        .main-header {
+            background: white;
+            padding: 25px 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .logout-btn {
+            background-color: var(--secondary);
+            border: none;
+        }
+
+        .logout-btn:hover {
+            background-color: #ff9100;
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            margin: 20px;
+        }
+
+        .table th {
+            background-color: var(--primary-light);
+            color: white;
+            font-weight: 500;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+        }
+
+        .filter-section {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .action-btn {
+            padding: 4px 8px;
+            font-size: 0.875rem;
+        }
+
+        .dropdown-toggle::after {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="profile-section d-flex align-items-center gap-3">
+                <img src="/static/images/profile_icon.png" alt="Profile" class="profile-pic">
+                <div>
+                    <div class="fw-bold">Dr. Sarah Johnson</div>
+                    <small class="text-white-50">Professor</small>
+                </div>
+            </div>
+
+            <div class="menu mt-3">
+                <a href="/dashboard" class="menu-item">
+                    <i class="fas fa-th-large"></i>
+                    Dashboard
+                </a>
+                <a href="/course" class="menu-item">
+                    <i class="fas fa-book"></i>
+                    Course
+                </a>
+                <a href="/question-bank" class="menu-item">
+                    <i class="fas fa-database"></i>
+                    Question Bank
+                </a>
+                <a href="generate-paper" class="menu-item">
+                    <i class="fas fa-plus-square"></i>
+                    Generate Question Paper
+                </a>
+                <a href="/history" class="menu-item active">
+                    <i class="fas fa-history"></i>
+                    History
+                </a>
+                <a href="/feedback" class="menu-item">
+                    <i class="fas fa-comment"></i>
+                    Feedback
+                </a>
+                <a href="/settings" class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="main-header d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-3">
+                    <img src="/static/images/obe_logo.png" alt="OBE Logo" height="40">
+                    <span class="fs-5 fw-bold">Question Paper Generator</span>
+                </div>
+                <button class="btn logout-btn" id="logoutBtn">Logout</button>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-4">Question Paper History</h4>
+
+                    <!-- Filter Section -->
+                    <div class="filter-section">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" placeholder="Search by course code/name">
+                            </div>
+                            <div class="col-md-2">
+                                <select class="form-select">
+                                    <option value="">All Semesters</option>
+                                    <option>1st Semester</option>
+                                    <option>2nd Semester</option>
+                                    <option>3rd Semester</option>
+                                    <option>4th Semester</option>
+                                    <option>5th Semester</option>
+                                    <option>6th Semester</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <select class="form-select">
+                                    <option value="">All Exam Types</option>
+                                    <option>Mid-term</option>
+                                    <option>Final</option>
+                                    <option>Quiz</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <select class="form-select">
+                                    <option value="">Status</option>
+                                    <option>Generated</option>
+                                    <option>Approved</option>
+                                    <option>Published</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-primary">Apply Filters</button>
+                                <button class="btn btn-outline-secondary ms-2">Reset</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- History Table -->
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Date Generated</th>
+                                    <th>Course Code</th>
+                                    <th>Course Name</th>
+                                    <th>Exam Type</th>
+                                    <th>Semester</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>2024-02-23</td>
+                                    <td>CS301</td>
+                                    <td>Data Structures</td>
+                                    <td>Mid-term</td>
+                                    <td>3rd Semester</td>
+                                    <td>
+                                        <span class="status-badge bg-success text-white">Published</span>
+                                    </td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
+                                                <li><a class="dropdown-item" href="#"><i class="fas fa-download me-2"></i>Download</a></li>
+                                                <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash-alt me-2"></i>Delete</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2024-02-20</td>
+                                    <td>CS302</td>
+                                    <td>Database Management</td>
+                                    <td>Quiz</td>
+                                    <td>3rd Semester</td>
+                                    <td>
+                                        <span class="status-badge bg-warning text-dark">Generated</span>
+                                    </td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
+                                                <li><a class="dropdown-item" href="#"><i class="fas fa-download me-2"></i>Download</a></li>
+                                                <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash-alt me-2"></i>Delete</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2024-02-15</td>
+                                    <td>CS401</td>
+                                    <td>Operating Systems</td>
+                                    <td>Final</td>
+                                    <td>4th Semester</td>
+                                    <td>
+                                        <span class="status-badge bg-info text-white">Approved</span>
+                                    </td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
+                                                <li><a class="dropdown-item" href="#"><i class="fas fa-download me-2"></i>Download</a></li>
+                                                <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash-alt me-2"></i>Delete</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <nav aria-label="Page navigation" class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1">Previous</a>
+                            </li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Logout button handler
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = '/logout';
+            }
+        });
+
+        // Menu item active state handler
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                document.querySelector('.menu-item.active').classList.remove('active');
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OBE Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3949ab;
+            --primary-light: #6f74dd;
+            --primary-dark: #00227b;
+            --secondary: #ffab40;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: var(--primary);
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .profile-section {
+            background-color: var(--primary-dark);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-pic {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .menu-item {
+            padding: 12px 20px;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: var(--primary-light);
+            text-decoration: none;
+            color: white;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .header {
+            background: white;
+            padding: 25px 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin: -20px -20px 20px -20px;
+        }
+
+        .stats-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            height: 100%;
+        }
+
+        .stats-card .icon {
+            color: var(--primary);
+        }
+
+        .stats-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .stats-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .section-title {
+            margin: 30px 0 20px 0;
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            height: 300px;
+        }
+
+        .recent-item {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+        }
+
+        .recent-item:hover {
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+
+        .badge-rounded {
+            border-radius: 20px;
+            padding: 5px 12px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .activity-icon {
+            background-color: var(--primary-light);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="profile-section">
+                <img src="/static/images/profile_icon.png" alt="Profile" class="profile-pic">
+                <div>
+                    <div class="fw-bold">Dr. Sarah Johnson</div>
+                    <small class="text-white-50">Professor</small>
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <a href="/dashboard" class="menu-item active">
+                    <i class="fas fa-th-large"></i>
+                    Dashboard
+                </a>
+                <a href="/course" class="menu-item">
+                    <i class="fas fa-book"></i>
+                    Course
+                </a>
+                <a href="/question-bank" class="menu-item">
+                    <i class="fas fa-database"></i>
+                    Question Bank
+                </a>
+                <a href="/generate-paper" class="menu-item">
+                    <i class="fas fa-plus-square"></i>
+                    Generate Question Paper
+                </a>
+                <a href="/history" class="menu-item">
+                    <i class="fas fa-history"></i>
+                    History
+                </a>
+                <a href="/feedback" class="menu-item">
+                    <i class="fas fa-comment"></i>
+                    Feedback
+                </a>
+                <a href="/settings" class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-3">
+                    <img src="/static/images/obe_logo.png" alt="OBE Logo" height="40">
+                    <span class="fs-5 fw-bold">Question Paper Generator</span>
+                </div>
+                <div>
+                    <button class="btn btn-warning" id="logoutBtn">Logout</button>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="section-title">
+                <i class="fas fa-chart-line me-2"></i> Key Metrics
+            </div>
+            <div class="row g-4 mb-4">
+                <!-- Total Questions Card -->
+                <div class="col-md-6 col-xl-3">
+                    <div class="stats-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="card-title">Total Questions</div>
+                            <div class="icon">
+                                <i class="fas fa-question-circle fa-lg"></i>
+                            </div>
+                        </div>
+                        <div class="stats-value">548</div>
+                        <div class="stats-label">Across all courses</div>
+                    </div>
+                </div>
+
+                <!-- Papers Generated Card -->
+                <div class="col-md-6 col-xl-3">
+                    <div class="stats-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="card-title">Papers Generated</div>
+                            <div class="icon">
+                                <i class="fas fa-file-alt fa-lg"></i>
+                            </div>
+                        </div>
+                        <div class="stats-value">32</div>
+                        <div class="stats-label">Last 30 days</div>
+                    </div>
+                </div>
+
+                <!-- Bloom's Coverage Card -->
+                <div class="col-md-6 col-xl-3">
+                    <div class="stats-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="card-title">Bloom's Coverage</div>
+                            <div class="icon">
+                                <i class="fas fa-chart-pie fa-lg"></i>
+                            </div>
+                        </div>
+                        <div class="stats-value">85%</div>
+                        <div class="stats-label">Balanced distribution</div>
+                    </div>
+                </div>
+
+                <!-- Total Courses Added Card (Replacing CO-PO Mapping) -->
+                <div class="col-md-6 col-xl-3">
+                    <div class="stats-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="card-title">Total Courses Added</div>
+                            <div class="icon">
+                                <i class="fas fa-book-open fa-lg"></i>
+                            </div>
+                        </div>
+                        <div class="stats-value">18</div>
+                        <div class="stats-label">Active courses</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Section -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-8">
+                    <div class="section-title">
+                        <i class="fas fa-chart-bar me-2"></i> Learning Outcomes Analysis
+                    </div>
+                    <div class="chart-container">
+                        <div class="d-flex justify-content-between mb-3">
+                            <h5 class="card-title">Bloom's Taxonomy Coverage by Course</h5>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="courseDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    CS101
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="courseDropdown">
+                                    <li><a class="dropdown-item" href="#">CS101</a></li>
+                                    <li><a class="dropdown-item" href="#">CS201</a></li>
+                                    <li><a class="dropdown-item" href="#">CS301</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div style="height: 220px; background-color: #f9f9f9; border-radius: 8px; display: flex; justify-content: center; align-items: center;">
+                            <span class="text-muted">Chart visualization would appear here</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="section-title">
+                        <i class="fas fa-bell me-2"></i> Upcoming Tasks
+                    </div>
+                    <div class="card">
+                        <div class="card-body p-0">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="fw-bold">Question review</div>
+                                        <small class="text-muted">CS101 midterm paper</small>
+                                    </div>
+                                    <span class="badge bg-danger badge-rounded">Today</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="fw-bold">CO-PO mapping</div>
+                                        <small class="text-muted">Update for CS201</small>
+                                    </div>
+                                    <span class="badge bg-warning badge-rounded">Tomorrow</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="fw-bold">Generate final papers</div>
+                                        <small class="text-muted">For CS301, CS302</small>
+                                    </div>
+                                    <span class="badge bg-primary badge-rounded">3 days</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="fw-bold">Department review</div>
+                                        <small class="text-muted">Semester question papers</small>
+                                    </div>
+                                    <span class="badge bg-info badge-rounded">Next week</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity and Papers Section -->
+            <div class="row g-4">
+                <div class="col-lg-7">
+                    <div class="section-title">
+                        <i class="fas fa-history me-2"></i> Recent Papers Generated
+                    </div>
+                    <div class="recent-item">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="mb-1">CS101: Introduction to Programming</h6>
+                                <span class="badge bg-primary me-1">Mid-Term</span>
+                                <small class="text-muted">Generated on Feb 20, 2025</small>
+                            </div>
+                            <div>
+                                <button class="btn btn-sm btn-outline-primary me-1"><i class="fas fa-eye"></i></button>
+                                <button class="btn btn-sm btn-outline-success"><i class="fas fa-download"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="recent-item">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="mb-1">CS201: Data Structures</h6>
+                                <span class="badge bg-danger me-1">Final</span>
+                                <small class="text-muted">Generated on Feb 18, 2025</small>
+                            </div>
+                            <div>
+                                <button class="btn btn-sm btn-outline-primary me-1"><i class="fas fa-eye"></i></button>
+                                <button class="btn btn-sm btn-outline-success"><i class="fas fa-download"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="recent-item">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="mb-1">CS301: Database Systems</h6>
+                                <span class="badge bg-warning me-1">Quiz</span>
+                                <small class="text-muted">Generated on Feb 15, 2025</small>
+                            </div>
+                            <div>
+                                <button class="btn btn-sm btn-outline-primary me-1"><i class="fas fa-eye"></i></button>
+                                <button class="btn btn-sm btn-outline-success"><i class="fas fa-download"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-5">
+                    <div class="section-title">
+                        <i class="fas fa-clipboard-list me-2"></i> Activity Log
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-plus"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">Added 5 new questions</h6>
+                                    <small class="text-muted">Today, 10:30 AM - CS101 Question Bank</small>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">Generated mid-term paper</h6>
+                                    <small class="text-muted">Yesterday, 2:15 PM - CS201</small>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-sitemap"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">Updated CO-PO mapping</h6>
+                                    <small class="text-muted">Feb 22, 2025 - CS301</small>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-edit"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">Modified question templates</h6>
+                                    <small class="text-muted">Feb 21, 2025 - System Settings</small>
+                                </div>
+                            </div>
+                            <button class="btn btn-outline-primary btn-sm w-100">View All Activity</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upcoming Assessment Calendar -->
+            <div class="section-title mt-4">
+                <i class="fas fa-calendar-alt me-2"></i> Assessment Calendar
+            </div>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="card-title">February - March 2025</h5>
+                                <div>
+                                    <button class="btn btn-sm btn-outline-secondary me-2"><i class="fas fa-chevron-left"></i></button>
+                                    <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-chevron-right"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card h-100 border-primary">
+                                <div class="card-header bg-primary text-white">
+                                    Feb 25, 2025
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="card-title">CS101 Quiz</h6>
+                                    <small>10:00 AM - 40 Questions</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card h-100 border-warning">
+                                <div class="card-header bg-warning">
+                                    Mar 2, 2025
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="card-title">CS201 Mid-Term</h6>
+                                    <small>2:00 PM - 60 Questions</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card h-100 border-danger">
+                                <div class="card-header bg-danger text-white">
+                                    Mar 10, 2025
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="card-title">CS301 Final</h6>
+                                    <small>9:00 AM - 100 Questions</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card h-100 border-success">
+                                <div class="card-header bg-success text-white">
+                                    Mar 15, 2025
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="card-title">CS401 Quiz</h6>
+                                    <small>11:00 AM - 30 Questions</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Logout button handler
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = '/logout';
+            }
+        });
+
+        // Menu item active state handler
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                document.querySelector('.menu-item.active').classList.remove('active');
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

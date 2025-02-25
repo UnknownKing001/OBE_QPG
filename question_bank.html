@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OBE Question Bank</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3949ab;
+            --primary-light: #6f74dd;
+            --primary-dark: #00227b;
+            --secondary: #ffab40;
+            --dark-text: #333;
+            --light-text: #fff;
+            --bg-light: #f5f5f5;
+            --card-bg: #fff;
+            --border-color: #e0e0e0;
+            --success: #4caf50;
+            --warning: #ff9800;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: var(--primary);
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .profile-section {
+            background-color: var(--primary-dark);
+            padding: 20px;
+        }
+
+        .profile-pic {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .menu-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: var(--primary-light);
+            text-decoration: none;
+            color: white;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex-grow: 1;
+        }
+
+        .main-header {
+            background: white;
+            padding: 25px 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .logout-btn {
+            background-color: var(--secondary);
+            border: none;
+        }
+
+        .logout-btn:hover {
+            background-color: #ff9100;
+        }
+
+        /* Question Bank Styles */
+        .question-bank {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 25px;
+            margin: 0 20px;
+        }
+
+        .question-bank-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .search-filter {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-filter input {
+            padding: 8px 15px;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            width: 250px;
+        }
+
+        /* Table Styles */
+        .questions-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .questions-table th,
+        .questions-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .questions-table th {
+            background-color: var(--bg-light);
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background-color: var(--success);
+            color: var(--light-text);
+        }
+
+        .badge-warning {
+            background-color: var(--warning);
+            color: var(--dark-text);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--primary);
+        }
+
+        .action-btn:hover {
+            color: var(--primary-dark);
+        }
+
+        /* Pagination Styles */
+        .pagination {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+            gap: 5px;
+        }
+
+        .page-btn {
+            padding: 5px 10px;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            cursor: pointer;
+        }
+
+        .page-btn.active {
+            background-color: var(--primary);
+            color: var(--light-text);
+            border-color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="profile-section d-flex align-items-center gap-3">
+                <img src="/static/images/profile_icon.png" alt="Profile" class="profile-pic">
+                <div>
+                    <div class="fw-bold">Dr. Sarah Johnson</div>
+                    <small class="text-white-50">Professor</small>
+                </div>
+            </div>
+
+            <div class="menu mt-3">
+                <a href="/dashboard" class="menu-item">
+                    <i class="fas fa-th-large"></i>
+                    Dashboard
+                </a>
+                <a href="/course" class="menu-item">
+                    <i class="fas fa-book"></i>
+                    Course
+                </a>
+                <a href="/question-bank" class="menu-item active">
+                    <i class="fas fa-database"></i>
+                    Question Bank
+                </a>
+                <a href="/generate-paper" class="menu-item">
+                    <i class="fas fa-plus-square"></i>
+                    Generate Question Paper
+                </a>
+                <a href="/history" class="menu-item">
+                    <i class="fas fa-history"></i>
+                    History
+                </a>
+                <a href="/feedback" class="menu-item">
+                    <i class="fas fa-comment"></i>
+                    Feedback
+                </a>
+                <a href="/settings" class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="main-header">
+                <div class="d-flex align-items-center gap-3">
+                    <img src="/static/images/obe_logo.png" alt="OBE Logo" height="40">
+                    <span class="fs-5 fw-bold">Question Paper Generator</span>
+                </div>
+                <button class="btn logout-btn" id="logoutBtn">Logout</button>
+            </div>
+
+            <!-- Question Bank Panel -->
+            <div class="question-bank">
+                <div class="question-bank-header">
+                    <h2>Question Bank</h2>
+                    <div class="search-filter">
+                        <input type="text" placeholder="Search questions...">
+                        <button class="btn btn-primary" id="addNewQuestionBtn">Add New Question</button>
+                    </div>
+                </div>
+
+                <table class="questions-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Question</th>
+                            <th>Course</th>
+                            <th>Bloom's Level</th>
+                            <th>Difficulty</th>
+                            <th>Marks</th>
+                            <th>Question Type</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Q001</td>
+                            <td>Explain the working principle of inheritance in OOP with an example.</td>
+                            <td>Android</td>
+                            <td><span class="badge badge-success">Understand</span></td>
+                            <td>Medium</td>
+                            <td>10</td>
+                            <td>Essay</td>
+                            <td class="action-buttons">
+                                <button class="action-btn">Edit</button>
+                                <button class="action-btn">View</button>
+                                <button class="action-btn">Delete</button>
+                            </td>
+                        </tr>
+                        <tr>
+                          <td>Q002</td>
+                          <td>Design an ER diagram for a hospital management system.</td>
+                          <td>System Software</td>
+                          <td><span class="badge badge-warning">Create</span></td>
+                          <td>Hard</td>
+                          <td>15</td>
+                            <td>Short answer</td>
+                          <td class="action-buttons">
+                            <button class="action-btn">Edit</button>
+                            <button class="action-btn">View</button>
+                            <button class="action-btn">Delete</button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Q003</td>
+                          <td>Write an algorithm to find the factorial of a number using recursion.</td>
+                          <td>Operating System</td>
+                          <td><span class="badge badge-success">Apply</span></td>
+                          <td>Medium</td>
+                          <td>5</td>
+                            <td>Descriptive</td>
+                          <td class="action-buttons">
+                            <button class="action-btn">Edit</button>
+                            <button class="action-btn">View</button>
+                            <button class="action-btn">Delete</button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Q004</td>
+                          <td>Analyze the time complexity of the given sorting algorithm.</td>
+                          <td>Computer Network</td>
+                          <td><span class="badge badge-warning">Analyze</span></td>
+                          <td>Hard</td>
+                          <td>11</td>
+                            <td>Essay</td>
+                          <td class="action-buttons">
+                            <button class="action-btn">Edit</button>
+                            <button class="action-btn">View</button>
+                            <button class="action-btn">Delete</button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Q005</td>
+                          <td>List and explain the ACID properties in database transactions.</td>
+                          <td>Data Structure</td>
+                          <td><span class="badge badge-success">Remember</span></td>
+                          <td>Easy</td>
+                          <td>5</td>
+                            <td>Descriptive</td>
+                          <td class="action-buttons">
+                            <button class="action-btn">Edit</button>
+                            <button class="action-btn">View</button>
+                            <button class="action-btn">Delete</button>
+                          </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="pagination">
+                    <button class="page-btn">Previous</button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">2</button>
+                    <button class="page-btn">3</button>
+                    <button class="page-btn">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Logout button handler
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = '/logout';
+            }
+        });
+
+        // Add New Question button handler
+        document.getElementById('addNewQuestionBtn').addEventListener('click', function() {
+            window.location.href = '/add-question';
+        });
+
+        // Navigation handling
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuItems = document.querySelectorAll('.menu-item');
+
+            menuItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href && href !== '#') {
+                        e.preventDefault();
+                        window.location.href = href;
+                    }
+                });
+            });
+
+            // Initialize search functionality
+            document.querySelector('.search-filter input').addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const rows = document.querySelectorAll('.questions-table tbody tr');
+
+                rows.forEach(row => {
+                    const question = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                    const course = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+
+                    if (question.includes(searchTerm) || course.includes(searchTerm)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+
+            // Initialize action buttons
+            const actionButtons = document.querySelectorAll('.action-btn');
+            actionButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const action = this.textContent.trim();
+                    const questionId = this.closest('tr').querySelector('td:first-child').textContent;
+
+                    if (action === 'Edit') {
+                        window.location.href = `/add-question.html?id=${questionId}&mode=edit`;
+                    } else if (action === 'View') {
+                        window.location.href = `/view-question.html?id=${questionId}`;
+                    } else if (action === 'Delete') {
+                        if (confirm(`Are you sure you want to delete question ${questionId}?`)) {
+                            console.log(`Deleting question ${questionId}`);
+                            // In a real app, you would send a request to your server
+                            // For demo, let's just remove the row
+                            this.closest('tr').remove();
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
